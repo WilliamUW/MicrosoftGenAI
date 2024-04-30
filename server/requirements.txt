@@ -1,0 +1,7 @@
+Flask==2.3.2
+ipython==8.13.2
+mss==9.0.1
+Pillow==10.3.0
+protobuf==4.25.3
+gunicorn==19.7.1
+google-generativeai==0.5.2
