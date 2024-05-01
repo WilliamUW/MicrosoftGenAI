@@ -18,6 +18,7 @@ import requests
 import base64
 import asyncio
 import time
+from openai import AzureOpenAI
 
 # Load environment variables from .env file
 load_dotenv()
@@ -94,6 +95,22 @@ async def capture_screen(filename="capture.png"):
         return img
 
 
+client = AzureOpenAI(
+    azure_endpoint="https://ai-w559wangai221933899005.openai.azure.com/",
+    api_key=os.getenv("AZURE_OPENAI_KEY"),
+    api_version="2024-02-15-preview",
+)
+message_text = [
+    {
+        "role": "system",
+        "content": "You are an AI assistant that will analyze the user's query and decide whether it requires visual context from the user's environment. Respond with 'Yes' if the query pertains to what the user is currently seeing, or 'No' if it does not. Examples of 'No' responses include queries that ask about general knowledge, calendar events, or abstract information. Examples of 'Yes' responses include queries about the user's immediate surroundings, such as 'I need help' or 'What are these'.",
+    },
+    {"role": "user", "content": "i need help"},
+    {"role": "assistant", "content": "Yes"},
+    {"role": "user", "content": "what are these"},
+]
+
+
 @app.route("/data", methods=["GET"])
 async def get():
     return (
@@ -106,10 +123,12 @@ async def get():
         200,
     )
 
+
 def image_to_base64(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode("utf-8")
-    
+
+
 async def azureImageCall(prompt, IMAGE_PATH="./capture.png"):
     # get screenshot
     screenshot = ImageGrab.grab()
@@ -259,9 +278,20 @@ async def receive_data():
 if __name__ == "__main__":
     print("starting server")
     start_time = time.time()
-    asyncio.run(azureImageCall("What do you see?", "./test.png"))
+    completion = client.chat.completions.create(
+        model="gpt-35-turbo",  # model = "deployment_name"
+        messages=message_text,
+        temperature=0.7,
+        max_tokens=800,
+        top_p=0.95,
+        frequency_penalty=0,
+        presence_penalty=0,
+        stop=None,
+    )
+    # asyncio.run(azureImageCall("What do you see?", "./test.png"))
     end_time = time.time()
 
     execution_time = end_time - start_time
     print(f"Execution time: {execution_time} seconds")
+    print(completion)
     # app.run(host="127.0.0.1", port=5000, debug=True)
