@@ -49,6 +49,36 @@ tools = [
 ]
 
 
+def needVisualContext(prompt):
+    start_time = time.time()
+    completion = client.chat.completions.create(
+        model="gpt-35-turbo",  # model = "deployment_name"
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an AI assistant that will analyze the user's query and decide whether it requires visual context from the user's environment. Respond with 'Yes' if the query pertains to what the user is currently seeing, or 'No' if it does not. Examples of 'No' responses include queries that ask about general knowledge, calendar events, or abstract information. Examples of 'Yes' responses include queries about the user's immediate surroundings, such as 'I need help' or 'What are these'.",
+            },
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.7,
+        max_tokens=800,
+        top_p=0.95,
+        frequency_penalty=0,
+        presence_penalty=0,
+        stop=None,
+    )
+    # asyncio.run(azureImageCall("What do you see?", "./test.png"))
+    end_time = time.time()
+
+    execution_time = end_time - start_time
+    print(f"Execution time: {execution_time} seconds")
+
+    print(completion)
+    message_content = completion.choices[0].message.content
+    print(message_content)
+    return "Yes" in message_content
+
+
 def to_markdown(text):
     text = text.replace("•", "  *")
     return Markdown(textwrap.indent(text, "> ", predicate=lambda _: True))
@@ -215,14 +245,23 @@ async def receive_data():
 
     prompt = user_input
 
-    response = await azureImageCall(prompt)
+    visualContextNeeded = needVisualContext(prompt)
 
-    print(response)
     message_content = None
-    try:
-        message_content = response["choices"][0]["message"]["content"]
-    except KeyError:
-        print("Function call")
+
+    if (visualContextNeeded):
+        print("Visual context needed")
+        response = await azureImageCall(prompt)
+        print(response)
+        try:
+            message_content = response["choices"][0]["message"]["content"]
+        except KeyError:
+            print("Function call")
+    else:
+        print("Visual context not needed")
+
+    # function call plus visual context
+
     if message_content:
         return (
             jsonify(
@@ -277,21 +316,6 @@ async def receive_data():
 
 if __name__ == "__main__":
     print("starting server")
-    start_time = time.time()
-    completion = client.chat.completions.create(
-        model="gpt-35-turbo",  # model = "deployment_name"
-        messages=message_text,
-        temperature=0.7,
-        max_tokens=800,
-        top_p=0.95,
-        frequency_penalty=0,
-        presence_penalty=0,
-        stop=None,
-    )
-    # asyncio.run(azureImageCall("What do you see?", "./test.png"))
-    end_time = time.time()
-
-    execution_time = end_time - start_time
-    print(f"Execution time: {execution_time} seconds")
-    print(completion)
-    # app.run(host="127.0.0.1", port=5000, debug=True)
+    
+    # needVisualContext("whats in front of me?")
+    app.run(host="127.0.0.1", port=5000, debug=True)
