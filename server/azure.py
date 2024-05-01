@@ -149,12 +149,24 @@ def getAzureResponse(prompt):
 
             print("The model wants to call the function: ", function_name)
 
+            additional_information = ""
+
+            match (function_name):
+                case "user_needs_help":
+                    additional_information = "I have rendered a 3d model of the object you need help with, as well as tutorial video!"
+
+                case "check_calendar":
+                    additional_information = "You have a flight to New York's LaGuardia Airport tomorrow at 8am. I have rendered a 3d map of NYC to better assist your travels including the location of your hotel in Soho, your upcoming meetings at the World Trade Center, and your upcoming dinner in Brooklyn!"
+
+                case "render_eclipse":
+                    additional_information = "I have rendered a 3d model of the eclipse for you to visualize."
+
             messages.append(
                 {
                     "tool_call_id": tool_call.id,
                     "role": "tool",
                     "name": function_name,
-                    "content": function_name + " has been performed.",
+                    "content": additional_information,
                 }
             )  # extend conversation with function response
         # second_response = client.chat.completions.create(
@@ -166,7 +178,7 @@ def getAzureResponse(prompt):
             "status": "success",
             "type": "function",
             "function_name": function_name,
-            "text": function_name + " has been performed!",
+            "text": additional_information,
         }
         print(result)
         return result
@@ -178,6 +190,12 @@ def getAzureResponse(prompt):
             "text": response_message.content,
         }
         print(result)
+        messages.append(
+            {
+                "role": "assistant",
+                "content": response_message.content,
+            }
+        )
         return result
 
 
