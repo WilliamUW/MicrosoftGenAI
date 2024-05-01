@@ -18,10 +18,33 @@ import requests
 import base64
 import asyncio
 
-from gemini import image_to_base64
-
 # Load environment variables from .env file
 load_dotenv()
+
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_current_weather",
+            "description": "Get the current weather",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA",
+                    },
+                    "format": {
+                        "type": "string",
+                        "enum": ["celsius", "fahrenheit"],
+                        "description": "The temperature unit to use. Infer this from the users location.",
+                    },
+                },
+                "required": ["location", "format"],
+            },
+        },
+    }
+]
 
 
 def to_markdown(text):
@@ -82,7 +105,10 @@ async def get():
         200,
     )
 
-
+def image_to_base64(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
+    
 async def azureImageCall(prompt, IMAGE_PATH="./capture.png"):
     # get screenshot
     screenshot = ImageGrab.grab()
@@ -118,6 +144,7 @@ async def azureImageCall(prompt, IMAGE_PATH="./capture.png"):
         "temperature": 0.7,
         "top_p": 0.95,
         "max_tokens": 100,
+        # "tools": tools,
     }
 
     GPT4V_ENDPOINT = "https://test833138126439.openai.azure.com/openai/deployments/gpt-4v/chat/completions?api-version=2024-02-15-preview"
@@ -230,4 +257,5 @@ async def receive_data():
 
 if __name__ == "__main__":
     print("starting server")
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    asyncio.run(azureImageCall("What's the weather like in SF?", "./test.png"))
+    # app.run(host="127.0.0.1", port=5000, debug=True)
