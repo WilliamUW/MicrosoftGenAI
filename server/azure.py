@@ -1,3 +1,4 @@
+import json
 import PIL
 from flask import Flask, request, jsonify
 from pathlib import Path
@@ -154,14 +155,21 @@ def getAzureResponse(prompt):
         # Step 4: send the info for each function call and function response to the model
         for tool_call in tool_calls:
             function_name = tool_call.function.name
+            # Parsing the JSON arguments:
+            tool_call_arguments = json.loads(tool_call.function.arguments)
 
-            print("The model wants to call the function: ", function_name)
+            # Extracting the "object" value:
+            object_value = tool_call_arguments.get("object", "No object found")
+
+            print("Extracted object:", object_value)
+
+            print("The model wants to call the function: ", function_name, object_value)
 
             additional_information = ""
 
             match (function_name):
                 case "user_needs_help":
-                    additional_information = "I have rendered a 3d model of the object you need help with, as well as tutorial video!"
+                    additional_information = "I have rendered a 3d model of the object " + object_value + " you need help with, as well as tutorial video!"
 
                 case "check_calendar":
                     additional_information = "You have a flight to New York's LaGuardia Airport tomorrow at 8am. I have rendered a 3d map of NYC to better assist your travels including the location of your hotel in Soho, your upcoming meetings at the World Trade Center, and your upcoming dinner in Brooklyn!"
@@ -189,6 +197,12 @@ def getAzureResponse(prompt):
             "text": additional_information,
         }
         print(result)
+        messages.append(
+            {
+                "role": "assistant",
+                "content": additional_information,
+            }
+        )
         return result
     else:
         print("The model does not want to call a function", response_message.content)

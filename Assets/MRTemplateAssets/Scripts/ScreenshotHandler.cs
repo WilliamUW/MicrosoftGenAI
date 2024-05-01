@@ -248,7 +248,7 @@ public class ScreenshotHandler : MonoBehaviour
         if (request.isNetworkError || request.isHttpError)
         {
             Debug.LogError("Error: " + request.error);
-            updateCaptureButtonText("Gemini rate limit, please try again.");
+            updateCaptureButtonText("Rate limit, please try again.");
             speak("Rate limit error, please try again.");
         }
         else
