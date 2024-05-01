@@ -93,7 +93,7 @@ tools = [
 messages = [
     {
         "role": "system",
-        "content": "You are GARVIS (Generative Artifical Research Virtual Intelligence System): Leverage augmented reality and visual intelligence to analyze surroundings, provide contextual information, generate interactive 3D models, and assist with real-time decision-making. Operate as an interactive visual assistant that enhances user understanding and interaction in their immediate environment. You will receive what the users sees in front of them and their query. Respond to the user concisely in a few sentences max. Tell the user to face their palm up when asking a question and down when they are finished speaking when introducing yourself.",
+        "content": "You are GARVIS (Generative Artifical Research Virtual Intelligence System): Leverage augmented reality and visual intelligence to analyze surroundings, provide contextual information, generate interactive 3D models, and assist with real-time decision-making. Operate as an interactive visual assistant that enhances user understanding and interaction in their immediate environment. You will receive what the users sees in front of them and their query. Respond to the user concisely in a few sentences max.",
     },
 ]
 
@@ -128,8 +128,9 @@ def needVisualContext(prompt):
     return "Yes" in message_content
 
 
-def getAzureResponse(prompt):
+def getAzureResponse(userPrompt, imageResponse):
     global messages
+    prompt = "User Query: " + userPrompt + ". What the user is seeing: " + imageResponse
     messages.append({"role": "user", "content": prompt})
     print(prompt)
     response = None
@@ -169,7 +170,11 @@ def getAzureResponse(prompt):
 
             match (function_name):
                 case "user_needs_help":
-                    additional_information = "I have rendered a 3d model of the object " + object_value + " you need help with, as well as tutorial video!"
+                    additional_information = (
+                        "I have rendered a 3d model of the object "
+                        + object_value
+                        + " you need help with, as well as tutorial video!"
+                    )
 
                 case "check_calendar":
                     additional_information = "You have a flight to New York's LaGuardia Airport tomorrow at 8am. I have rendered a 3d map of NYC to better assist your travels including the location of your hotel in Soho, your upcoming meetings at the World Trade Center, and your upcoming dinner in Brooklyn!"
@@ -194,13 +199,13 @@ def getAzureResponse(prompt):
             "status": "success",
             "type": "function",
             "function_name": function_name,
-            "text": additional_information,
+            "text": additional_information + " " + imageResponse,
         }
         print(result)
         messages.append(
             {
                 "role": "assistant",
-                "content": additional_information,
+                "content": additional_information + " " + imageResponse,
             }
         )
         return result
@@ -373,9 +378,7 @@ async def receive_data():
         print("Visual context not needed")
 
     # function call plus visual context
-    azureResponse = getAzureResponse(
-        "User Query: " + prompt + ". What the user is seeing: " + imageResponse
-    )
+    azureResponse = getAzureResponse(prompt, imageResponse)
 
     if azureResponse:
         azureResponse["image"] = imageString
