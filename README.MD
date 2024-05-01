@@ -29,15 +29,13 @@ pip install -r requirements.txt
 
 1. Create .env file.
 
-You need an WestUS Azure API Key with GPT4 Turbo with Vision + GPT 3.5 Turbo (1106) Deployed
+You need an **WestUS** Azure API Key with **GPT4 Turbo with Vision + GPT 3.5 Turbo (1106)** Deployed
 
 ```
 WESTUS_AZURE_API_KEY=d22...564
 ```
 
 2. Start local python web server
-
-Microsoft Azure Backend (OpenAI GPT-4 Turbo Vision with Function Calling)
 
 ```
 cd server && python azure.py
@@ -66,5 +64,7 @@ cd server && ngrok http --domain=trusting-ostrich-measured.ngrok-free.app http:/
 Build "mainScene" to Quest 3.
 
 6. Start Oculus Casting to computer.
+
+Make sure the computer screen is the Oculus Casting screen in full screen.
 
 7. Talk to GARVIS by facing your palm up, stop recording your speech by facing your palm down.
