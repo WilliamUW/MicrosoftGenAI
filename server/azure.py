@@ -23,7 +23,7 @@ from openai import AzureOpenAI
 # Load environment variables from .env file
 load_dotenv()
 client = AzureOpenAI(
-    azure_endpoint="https://ai-w559wangai221933899005.openai.azure.com/",
+    azure_endpoint="https://test833138126439.openai.azure.com/",
     api_key=os.getenv("WESTUS_AZURE_API_KEY"),
     api_version="2024-02-15-preview",
 )
