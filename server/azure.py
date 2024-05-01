@@ -31,20 +31,64 @@ tools = [
     {
         "type": "function",
         "function": {
-            "name": "get_current_weather",
-            "description": "Get the current weather in a given location",
+            "name": "user_needs_help",
+            "description": "If the user says they need help, or needs help with anything, assist them by finding relevant tutorials.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "object": {
+                        "type": "string",
+                        "description": "The object they need help with."
+                    },
+                },
+                "required": ["object"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "render_flight_path",
+            "description": "Render a flight path if the user has an upcoming flight.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "location": {
                         "type": "string",
-                        "description": "The city and state, e.g. San Francisco, CA",
-                    },
-                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
+                        "description": "The city and state, e.g., San Francisco, CA, or a zip code, e.g., 95616."
+                    }
                 },
-                "required": ["location"],
-            },
-        },
+                "required": ["location"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "check_calendar",
+            "description": "Check the user's calendar for upcoming events and provide a summary.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "render_eclipse",
+            "description": "Explain the eclipse if the user mentions it, and render a 3D model of the eclipse.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "object": {
+                        "type": "string",
+                        "description": "The object of interest for the user to visualize."
+                    }
+                },
+                "required": ["object"]
+            }
+        }
     }
 ]
 
@@ -324,6 +368,6 @@ async def receive_data():
 
 if __name__ == "__main__":
     print("starting server")
-    getAzureResponse("what's the weather in nyc")
+    # getAzureResponse("whats upcoming on my calendar?")
     # needVisualContext("whats in front of me?")
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    # app.run(host="127.0.0.1", port=5000, debug=True)
