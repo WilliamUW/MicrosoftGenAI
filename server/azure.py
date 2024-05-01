@@ -23,7 +23,7 @@ from openai import AzureOpenAI
 # Load environment variables from .env file
 load_dotenv()
 client = AzureOpenAI(
-    azure_endpoint="https://test833138126439.openai.azure.com/",
+    azure_endpoint="https://ai-bwilliamwangwestus167464300836.openai.azure.com/",
     api_key=os.getenv("WESTUS_AZURE_API_KEY"),
     api_version="2024-02-15-preview",
 )
@@ -287,7 +287,7 @@ async def azureImageCall(prompt, IMAGE_PATH="./capture.png"):
         # "tools": tools,
     }
 
-    GPT4V_ENDPOINT = "https://test833138126439.openai.azure.com/openai/deployments/gpt-4v/chat/completions?api-version=2024-02-15-preview"
+    GPT4V_ENDPOINT = "https://ai-bwilliamwangwestus167464300836.openai.azure.com/openai/deployments/gpt-4vision/chat/completions?api-version=2024-02-15-preview"
 
     # Send request
     try:
@@ -302,11 +302,8 @@ async def azureImageCall(prompt, IMAGE_PATH="./capture.png"):
     print("Response Data:", response_data)
     message_content = response_data["choices"][0]["message"]["content"]
     print("Message Content:", message_content)
-    messages.append(
-        {"role": "assistant", "content": [{"type": "text", "text": message_content}]}
-    )
     # print(messages)
-    return response_data
+    return message_content
 
 
 @app.route("/data", methods=["POST"])
@@ -344,22 +341,18 @@ async def receive_data():
 
     visualContextNeeded = needVisualContext(prompt)
 
-    message_content = "None"
+    imageResponse = "None"
 
     if visualContextNeeded:
         print("Visual context needed")
-        response = await azureImageCall(prompt)
-        print(response)
-        try:
-            message_content = response["choices"][0]["message"]["content"]
-        except KeyError:
-            print("Function call")
+        imageResponse = await azureImageCall(prompt)
+        print(imageResponse)
     else:
         print("Visual context not needed")
 
     # function call plus visual context
     azureResponse = getAzureResponse(
-        "User Query: " + prompt + ". Visual Context: " + message_content
+        "User Query: " + prompt + ". Visual Context: " + imageResponse
     )
 
     if azureResponse:
