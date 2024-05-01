@@ -17,6 +17,7 @@ import os
 import requests
 import base64
 import asyncio
+import time
 
 # Load environment variables from .env file
 load_dotenv()
@@ -257,5 +258,10 @@ async def receive_data():
 
 if __name__ == "__main__":
     print("starting server")
-    asyncio.run(azureImageCall("What's the weather like in SF?", "./test.png"))
+    start_time = time.time()
+    asyncio.run(azureImageCall("What do you see?", "./test.png"))
+    end_time = time.time()
+
+    execution_time = end_time - start_time
+    print(f"Execution time: {execution_time} seconds")
     # app.run(host="127.0.0.1", port=5000, debug=True)
