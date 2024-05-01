@@ -22,13 +22,17 @@ from openai import AzureOpenAI
 
 # Load environment variables from .env file
 load_dotenv()
-
+client = AzureOpenAI(
+    azure_endpoint="https://ai-w559wangai221933899005.openai.azure.com/",
+    api_key=os.getenv("AZURE_OPENAI_KEY"),
+    api_version="2024-02-15-preview",
+)
 tools = [
     {
         "type": "function",
         "function": {
             "name": "get_current_weather",
-            "description": "Get the current weather",
+            "description": "Get the current weather in a given location",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -36,16 +40,19 @@ tools = [
                         "type": "string",
                         "description": "The city and state, e.g. San Francisco, CA",
                     },
-                    "format": {
-                        "type": "string",
-                        "enum": ["celsius", "fahrenheit"],
-                        "description": "The temperature unit to use. Infer this from the users location.",
-                    },
+                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
                 },
-                "required": ["location", "format"],
+                "required": ["location"],
             },
         },
     }
+]
+
+messages = [
+    {
+        "role": "system",
+        "content": "You are GARVIS (Generative Artifical Research Virtual Intelligence System): Leverage augmented reality and visual intelligence to analyze surroundings, provide contextual information, generate interactive 3D models, and assist with real-time decision-making. Operate as an interactive visual assistant that enhances user understanding and interaction in their immediate environment. You will receive what the users sees in front of them and their query. Respond to the user concisely in a few sentences max.",
+    },
 ]
 
 
@@ -79,6 +86,24 @@ def needVisualContext(prompt):
     return "Yes" in message_content
 
 
+def getAzureResponse(prompt):
+    messages.append({"role": "user", "content": prompt})
+    response = client.chat.completions.create(
+        model="gpt-35-turbo",
+        messages=messages,
+        tools=tools,
+        tool_choice="auto",  # auto is default, but we'll be explicit
+    )
+    print(response)
+    response_message = response.choices[0].message
+    tool_calls = response_message.tool_calls
+    # Step 2: check if the model wanted to call a function
+    if tool_calls:
+        print("The model wants to call a function")
+    else:
+        print("The model does not want to call a function", response_message.content)
+
+
 def to_markdown(text):
     text = text.replace("•", "  *")
     return Markdown(textwrap.indent(text, "> ", predicate=lambda _: True))
@@ -92,18 +117,6 @@ def get_tutorial():
 
 
 GPT4V_KEY = os.getenv("OPENAI_API_KEY")
-
-messages = [
-    {
-        "role": "system",
-        "content": [
-            {
-                "type": "text",
-                "text": "You are GARVIS (Gemini Assisted Research Virtual Intelligence System): Leverage augmented reality and visual intelligence to analyze surroundings, provide contextual information, generate interactive 3D models, and assist with real-time decision-making. Operate as an interactive visual assistant that enhances user understanding and interaction in their immediate environment. You will receive what the users sees in front of them and their query. Respond to the user concisely in a few sentences max.",
-            }
-        ],
-    },
-]
 
 
 async def capture_screen(filename="capture.png"):
@@ -125,11 +138,6 @@ async def capture_screen(filename="capture.png"):
         return img
 
 
-client = AzureOpenAI(
-    azure_endpoint="https://ai-w559wangai221933899005.openai.azure.com/",
-    api_key=os.getenv("AZURE_OPENAI_KEY"),
-    api_version="2024-02-15-preview",
-)
 message_text = [
     {
         "role": "system",
@@ -249,7 +257,7 @@ async def receive_data():
 
     message_content = None
 
-    if (visualContextNeeded):
+    if visualContextNeeded:
         print("Visual context needed")
         response = await azureImageCall(prompt)
         print(response)
@@ -316,6 +324,6 @@ async def receive_data():
 
 if __name__ == "__main__":
     print("starting server")
-    
+    getAzureResponse("what's the weather in nyc")
     # needVisualContext("whats in front of me?")
     app.run(host="127.0.0.1", port=5000, debug=True)
