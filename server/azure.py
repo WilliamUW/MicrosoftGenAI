@@ -32,7 +32,7 @@ tools = [
         "type": "function",
         "function": {
             "name": "user_needs_help",
-            "description": "If the user says they need help, or needs help with anything, assist them by finding relevant tutorials.",
+            "description": "If the user says I need help, help them by finding relevant tutorials for them. Do not call this function if they are asking for information about what they are seeing.",
             "parameters": {
                 "type": "object",
                 "properties": {
