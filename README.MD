@@ -53,7 +53,7 @@ cd server && ngrok http http://127.0.0.1:5000
 
 4. Update the endpoint URL in the Meta Quest C# script to the ngrok url.
 
-https://github.com/WilliamUW/GARVIS/blob/135ddc978230c9b48d1adf15321834e65ca73656/Assets/MRTemplateAssets/Scripts/ScreenshotHandler.cs#L44
+https://github.com/WilliamUW/MicrosoftGenAI/blob/2e95186dc92769239e4430056937d0b35b577e9f/Assets/MRTemplateAssets/Scripts/ScreenshotHandler.cs#L44
 
 Note: I run this command so it's set to "trusting-ostrich-measured.ngrok-free.app/data" by default.
 
