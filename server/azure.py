@@ -38,12 +38,12 @@ tools = [
                 "properties": {
                     "object": {
                         "type": "string",
-                        "description": "The object they need help with."
+                        "description": "The object they need help with.",
                     },
                 },
-                "required": ["object"]
-            }
-        }
+                "required": ["object"],
+            },
+        },
     },
     {
         "type": "function",
@@ -55,23 +55,20 @@ tools = [
                 "properties": {
                     "location": {
                         "type": "string",
-                        "description": "The city and state, e.g., San Francisco, CA, or a zip code, e.g., 95616."
+                        "description": "The city and state, e.g., San Francisco, CA, or a zip code, e.g., 95616.",
                     }
                 },
-                "required": ["location"]
-            }
-        }
+                "required": ["location"],
+            },
+        },
     },
     {
         "type": "function",
         "function": {
             "name": "check_calendar",
             "description": "Check the user's calendar for upcoming events and provide a summary.",
-            "parameters": {
-                "type": "object",
-                "properties": {}
-            }
-        }
+            "parameters": {"type": "object", "properties": {}},
+        },
     },
     {
         "type": "function",
@@ -83,13 +80,13 @@ tools = [
                 "properties": {
                     "object": {
                         "type": "string",
-                        "description": "The object of interest for the user to visualize."
+                        "description": "The object of interest for the user to visualize.",
                     }
                 },
-                "required": ["object"]
-            }
-        }
-    }
+                "required": ["object"],
+            },
+        },
+    },
 ]
 
 messages = [
@@ -143,9 +140,44 @@ def getAzureResponse(prompt):
     tool_calls = response_message.tool_calls
     # Step 2: check if the model wanted to call a function
     if tool_calls:
-        print("The model wants to call a function")
+
+        messages.append(response_message)  # extend conversation with assistant's reply
+        # Step 4: send the info for each function call and function response to the model
+        for tool_call in tool_calls:
+            function_name = tool_call.function.name
+
+            print("The model wants to call the function: ", function_name)
+
+            messages.append(
+                {
+                    "tool_call_id": tool_call.id,
+                    "role": "tool",
+                    "name": function_name,
+                    "content": function_name + " has been performed.",
+                }
+            )  # extend conversation with function response
+        # second_response = client.chat.completions.create(
+        #     model="gpt-35-turbo",
+        #     messages=messages,
+        # )
+        # print(second_response)
+        result = {
+            "status": "success",
+            "type": "function",
+            "function_name": function_name,
+            "text": function_name + " has been performed!",
+        }
+        print(result)
+        return result
     else:
         print("The model does not want to call a function", response_message.content)
+        result = {
+            "status": "success",
+            "type": "text",
+            "text": response_message.content,
+        }
+        print(result)
+        return result
 
 
 def to_markdown(text):
@@ -368,6 +400,6 @@ async def receive_data():
 
 if __name__ == "__main__":
     print("starting server")
-    # getAzureResponse("whats upcoming on my calendar?")
+    # getAzureResponse("introduce yourself")
     # needVisualContext("whats in front of me?")
     # app.run(host="127.0.0.1", port=5000, debug=True)
