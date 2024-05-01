@@ -24,7 +24,7 @@ from openai import AzureOpenAI
 load_dotenv()
 client = AzureOpenAI(
     azure_endpoint="https://ai-w559wangai221933899005.openai.azure.com/",
-    api_key=os.getenv("AZURE_OPENAI_KEY"),
+    api_key=os.getenv("WESTUS_AZURE_API_KEY"),
     api_version="2024-02-15-preview",
 )
 tools = [
@@ -128,6 +128,7 @@ def needVisualContext(prompt):
 
 
 def getAzureResponse(prompt):
+    global messages
     messages.append({"role": "user", "content": prompt})
     response = client.chat.completions.create(
         model="gpt-35-turbo",
@@ -192,7 +193,7 @@ def get_tutorial():
     print("Getting tutorial")
 
 
-GPT4V_KEY = os.getenv("OPENAI_API_KEY")
+GPT4V_KEY = os.getenv("WESTUS_AZURE_API_KEY")
 
 
 async def capture_screen(filename="capture.png"):
@@ -212,17 +213,6 @@ async def capture_screen(filename="capture.png"):
         print(f"Screenshot saved as {filename}")
 
         return img
-
-
-message_text = [
-    {
-        "role": "system",
-        "content": "You are an AI assistant that will analyze the user's query and decide whether it requires visual context from the user's environment. Respond with 'Yes' if the query pertains to what the user is currently seeing, or 'No' if it does not. Examples of 'No' responses include queries that ask about general knowledge, calendar events, or abstract information. Examples of 'Yes' responses include queries about the user's immediate surroundings, such as 'I need help' or 'What are these'.",
-    },
-    {"role": "user", "content": "i need help"},
-    {"role": "assistant", "content": "Yes"},
-    {"role": "user", "content": "what are these"},
-]
 
 
 @app.route("/data", methods=["GET"])
@@ -259,22 +249,20 @@ async def azureImageCall(prompt, IMAGE_PATH="./capture.png"):
         "api-key": GPT4V_KEY,
     }
 
-    messages.append(
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "image_url",
-                    "image_url": {"url": f"data:image/jpeg;base64,{encoded_image}"},
-                },
-                {"type": "text", "text": prompt},
-            ],
-        },
-    )
-
     # Payload for the request
     payload = {
-        "messages": messages,
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/jpeg;base64,{encoded_image}"},
+                    },
+                    {"type": "text", "text": prompt},
+                ],
+            },
+        ],
         "temperature": 0.7,
         "top_p": 0.95,
         "max_tokens": 100,
@@ -307,6 +295,7 @@ async def azureImageCall(prompt, IMAGE_PATH="./capture.png"):
 async def receive_data():
     global chat
     global start_convo
+    global messages
     data = request.json
     user_input = data["user_input"]
     print("Data Received:", data)
@@ -316,6 +305,12 @@ async def receive_data():
         if data["reset"]:
             print("resetting conversation")
             # TODO
+            messages = [
+                {
+                    "role": "system",
+                    "content": "You are GARVIS (Generative Artifical Research Virtual Intelligence System): Leverage augmented reality and visual intelligence to analyze surroundings, provide contextual information, generate interactive 3D models, and assist with real-time decision-making. Operate as an interactive visual assistant that enhances user understanding and interaction in their immediate environment. You will receive what the users sees in front of them and their query. Respond to the user concisely in a few sentences max.",
+                },
+            ]
 
     # get screenshot
     screenshot = ImageGrab.grab()

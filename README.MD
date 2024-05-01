@@ -29,10 +29,10 @@ pip install -r requirements.txt
 
 1. Create .env file.
 
-If you have Microsoft Azure Key:
+You need an WestUS Azure API Key with GPT4 Turbo with Vision + GPT 3.5 Turbo (1106) Deployed
 
 ```
-OPENAI_API_KEY=d22...564
+WESTUS_AZURE_API_KEY=d22...564
 ```
 
 2. Start local python web server
@@ -60,7 +60,6 @@ Note: I run this command so it's set to "trusting-ostrich-measured.ngrok-free.ap
 ```
 cd server && ngrok http --domain=trusting-ostrich-measured.ngrok-free.app http://127.0.0.1:5000
 ```
-
 
 5. Build and run to Quest 3.
 
