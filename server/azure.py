@@ -32,7 +32,7 @@ tools = [
         "type": "function",
         "function": {
             "name": "user_needs_help",
-            "description": "If the user says I need help, help them by finding relevant tutorials for them. Do not call this function if they are asking for information about what they are seeing.",
+            "description": "Only call this if the user explicitly says 'I need help'. Do not call this function if they are ask for what do you see / what is front of me / what am I holding.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -66,7 +66,7 @@ tools = [
         "type": "function",
         "function": {
             "name": "check_calendar",
-            "description": "Check the user's calendar for upcoming events and provide a summary.",
+            "description": "If the user asks what's upcoming their calendar, check the user's calendar for upcoming events and provide a summary.",
             "parameters": {"type": "object", "properties": {}},
         },
     },
@@ -74,7 +74,7 @@ tools = [
         "type": "function",
         "function": {
             "name": "render_eclipse",
-            "description": "Explain the eclipse if the user mentions it, and render a 3D model of the eclipse.",
+            "description": "If the user asks how an eclipse works, render a 3D model of the eclipse.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -92,7 +92,7 @@ tools = [
 messages = [
     {
         "role": "system",
-        "content": "You are GARVIS (Generative Artifical Research Virtual Intelligence System): Leverage augmented reality and visual intelligence to analyze surroundings, provide contextual information, generate interactive 3D models, and assist with real-time decision-making. Operate as an interactive visual assistant that enhances user understanding and interaction in their immediate environment. You will receive what the users sees in front of them and their query. Respond to the user concisely in a few sentences max.",
+        "content": "You are GARVIS (Generative Artifical Research Virtual Intelligence System): Leverage augmented reality and visual intelligence to analyze surroundings, provide contextual information, generate interactive 3D models, and assist with real-time decision-making. Operate as an interactive visual assistant that enhances user understanding and interaction in their immediate environment. You will receive what the users sees in front of them and their query. Respond to the user concisely in a few sentences max. Tell the user to face their palm up when asking a question and down when they are finished speaking when introducing yourself.",
     },
 ]
 
@@ -130,12 +130,20 @@ def needVisualContext(prompt):
 def getAzureResponse(prompt):
     global messages
     messages.append({"role": "user", "content": prompt})
-    response = client.chat.completions.create(
-        model="gpt-35-turbo",
-        messages=messages,
-        tools=tools,
-        tool_choice="auto",  # auto is default, but we'll be explicit
-    )
+    print(prompt)
+    response = None
+    if "eclipse" in prompt or "help" in prompt or "calendar" in prompt:
+        response = client.chat.completions.create(
+            model="gpt-35-turbo",
+            messages=messages,
+            tools=tools,
+            tool_choice="auto",  # auto is default, but we'll be explicit
+        )
+    else:
+        response = client.chat.completions.create(
+            model="gpt-35-turbo",
+            messages=messages,
+        )
     print(response)
     response_message = response.choices[0].message
     tool_calls = response_message.tool_calls
@@ -352,7 +360,7 @@ async def receive_data():
 
     # function call plus visual context
     azureResponse = getAzureResponse(
-        "User Query: " + prompt + ". Visual Context: " + imageResponse
+        "User Query: " + prompt + ". What the user is seeing: " + imageResponse
     )
 
     if azureResponse:
