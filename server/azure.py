@@ -331,7 +331,7 @@ async def receive_data():
 
     visualContextNeeded = needVisualContext(prompt)
 
-    message_content = None
+    message_content = "None"
 
     if visualContextNeeded:
         print("Visual context needed")
@@ -345,17 +345,14 @@ async def receive_data():
         print("Visual context not needed")
 
     # function call plus visual context
+    azureResponse = getAzureResponse(
+        "User Query: " + prompt + ". Visual Context: " + message_content
+    )
 
-    if message_content:
+    if azureResponse:
+        azureResponse["image"] = imageString
         return (
-            jsonify(
-                {
-                    "status": "success",
-                    "type": "text",
-                    "text": message_content,
-                    "image": imageString,
-                }
-            ),
+            jsonify(azureResponse),
             200,
         )
     #     function_call = response.parts[0].function_call
@@ -402,4 +399,4 @@ if __name__ == "__main__":
     print("starting server")
     # getAzureResponse("introduce yourself")
     # needVisualContext("whats in front of me?")
-    # app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(host="127.0.0.1", port=5000, debug=True)
