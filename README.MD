@@ -69,7 +69,7 @@ Build "mainScene" to Quest 3.
 
 Make sure the computer screen is the Oculus Casting screen in full screen.
 
-![casting](https://cdn.discordapp.com/attachments/1234940320408539178/1235329174332248215/oculuscasting.PNG?ex=6633f972&is=6632a7f2&hm=b032de5e7e6c2aaf21b4c8ef6e51aa5651737eacd5c7340177782ca08dabdc39&)
+![casting](https://media.discordapp.net/attachments/1234940320408539178/1235329798377705602/oculuscasting.PNG?ex=6633fa07&is=6632a887&hm=a1f7fd844884e225a31e6b5f707521b1959e09afe8c8fc8f16fe6e8b0bf69fc5&=&format=webp&quality=lossless&width=1742&height=896)
 
 ![fullscreen](https://cdn.discordapp.com/attachments/1234940320408539178/1235329173619478668/fullscreencasting.png?ex=6633f972&is=6632a7f2&hm=26c6a470b007dc9a37f9d4c55f651ce8532f48ee764cc929449994d126a7ff2b&)
 
