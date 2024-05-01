@@ -35,7 +35,7 @@ You need an **WestUS** Azure API Key with **GPT4 Turbo with Vision + GPT 3.5 Tur
 WESTUS_AZURE_API_KEY=d22...564
 ```
 
-!(https://cdn.discordapp.com/attachments/1234940320408539178/1235329172956516533/azure.PNG?ex=6633f972&is=6632a7f2&hm=988aa3b6bdce864a2da91aae95bc8ad0a4d3b4541e8aed03d842bcad555095f9&)
+![Azure](https://cdn.discordapp.com/attachments/1234940320408539178/1235329172956516533/azure.PNG?ex=6633f972&is=6632a7f2&hm=988aa3b6bdce864a2da91aae95bc8ad0a4d3b4541e8aed03d842bcad555095f9&)
 
 2. Start local python web server
 
@@ -69,8 +69,8 @@ Build "mainScene" to Quest 3.
 
 Make sure the computer screen is the Oculus Casting screen in full screen.
 
-!(https://cdn.discordapp.com/attachments/1234940320408539178/1235329174332248215/oculuscasting.PNG?ex=6633f972&is=6632a7f2&hm=b032de5e7e6c2aaf21b4c8ef6e51aa5651737eacd5c7340177782ca08dabdc39&)
+![casting](https://cdn.discordapp.com/attachments/1234940320408539178/1235329174332248215/oculuscasting.PNG?ex=6633f972&is=6632a7f2&hm=b032de5e7e6c2aaf21b4c8ef6e51aa5651737eacd5c7340177782ca08dabdc39&)
 
-!(https://cdn.discordapp.com/attachments/1234940320408539178/1235329173619478668/fullscreencasting.png?ex=6633f972&is=6632a7f2&hm=26c6a470b007dc9a37f9d4c55f651ce8532f48ee764cc929449994d126a7ff2b&)
+![fullscreen](https://cdn.discordapp.com/attachments/1234940320408539178/1235329173619478668/fullscreencasting.png?ex=6633f972&is=6632a7f2&hm=26c6a470b007dc9a37f9d4c55f651ce8532f48ee764cc929449994d126a7ff2b&)
 
 7. Talk to GARVIS by facing your palm up, stop recording your speech by facing your palm down.
