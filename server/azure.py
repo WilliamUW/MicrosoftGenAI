@@ -49,23 +49,6 @@ tools = [
     {
         "type": "function",
         "function": {
-            "name": "render_flight_path",
-            "description": "Render a flight path if the user has an upcoming flight.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "location": {
-                        "type": "string",
-                        "description": "The city and state, e.g., San Francisco, CA, or a zip code, e.g., 95616.",
-                    }
-                },
-                "required": ["location"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
             "name": "check_calendar",
             "description": "If the user asks what's upcoming their calendar, check the user's calendar for upcoming events and provide a summary.",
             "parameters": {"type": "object", "properties": {}},
@@ -75,7 +58,7 @@ tools = [
         "type": "function",
         "function": {
             "name": "render_eclipse",
-            "description": "If the user asks how an eclipse works, render a 3D model of the eclipse.",
+            "description": "If the user asks how an eclipse works or show me an eclipse, render a 3D model of the eclipse.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -105,7 +88,7 @@ def needVisualContext(prompt):
         messages=[
             {
                 "role": "system",
-                "content": "You are an AI assistant that will analyze the user's query and decide whether it requires visual context from the user's environment. Respond with 'Yes' if the query pertains to what the user is currently seeing, or 'No' if it does not. Examples of 'No' responses include queries that ask about general knowledge, calendar events, or abstract information. Examples of 'Yes' responses include queries about the user's immediate surroundings, such as 'I need help' or 'What are these'.",
+                "content": "You are an AI assistant that will analyze the user's query and decide whether it requires visual context from the user's environment. Respond with 'Yes' if the query pertains to what the user is currently seeing, or 'No' if it does not. Examples of 'No' responses include queries that ask about general knowledge, calendar events, or abstract information. Examples of 'Yes' responses include queries about the user's immediate surroundings, such as 'I need help' or 'What are these', what is this', 'what am i looking at', 'whats in front of me' ",
             },
             {"role": "user", "content": prompt},
         ],
