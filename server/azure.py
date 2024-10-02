@@ -117,7 +117,7 @@ def getAzureResponse(userPrompt, imageResponse):
     messages.append({"role": "user", "content": prompt})
     print(prompt)
     response = None
-    if "eclipse" in prompt or "help" in prompt or "calendar" in prompt:
+    if prompt:
         response = client.chat.completions.create(
             model="gpt-35-turbo",
             messages=messages,
