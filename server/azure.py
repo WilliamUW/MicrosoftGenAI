@@ -364,44 +364,6 @@ async def receive_data():
             jsonify(azureResponse),
             200,
         )
-    #     function_call = response.parts[0].function_call
-    #     function_name = function_call.name
-    #     additional_information = ""
-    #     match (function_name):
-    #         case "user_needs_help":
-    #             additional_information = "I have rendered a 3d model of the object you need help with, as well as tutorial video."
-
-    #         case "check_calendar":
-    #             additional_information = "The user has a flight to New York's LaGuardia Airport tomorrow at 8am. I have rendered a 3d map of NYC to better assist your travels including the location of your hotel in Soho, your upcoming meetings at the World Trade Center, and your upcoming dinner in Brooklyn."
-
-    #         case "render_eclipse":
-    #             additional_information = (
-    #                 "I have rendered a 3d model of the eclipse for you to visualize."
-    #             )
-    #     afterFunctionResponse = chat.send_message(
-    #         "Respond to the user that the action has been performed. Additional information: "
-    #         + additional_information,
-    #         tools=[],
-    #     )
-    #     print(afterFunctionResponse)
-
-    #     return (
-    #         jsonify(
-    #             {
-    #                 "status": "success",
-    #                 "type": "function",
-    #                 "function_name": function_name,
-    #                 "text": afterFunctionResponse.text,
-    #                 "image": imageString,
-    #             }
-    #         ),
-    #         200,
-    #     )
-    # else:
-
-
-# async def start():
-#     await azureImageCall("What do you see?", "./test.png")
 
 
 if __name__ == "__main__":
