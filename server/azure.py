@@ -124,11 +124,6 @@ def getAzureResponse(userPrompt, imageResponse):
             tools=tools,
             tool_choice="auto",  # auto is default, but we'll be explicit
         )
-    else:
-        response = client.chat.completions.create(
-            model="gpt-35-turbo",
-            messages=messages,
-        )
     print(response)
     response_message = response.choices[0].message
     tool_calls = response_message.tool_calls
