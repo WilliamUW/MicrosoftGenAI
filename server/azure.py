@@ -167,12 +167,7 @@ def getAzureResponse(userPrompt, imageResponse):
                     "name": function_name,
                     "content": additional_information,
                 }
-            )  # extend conversation with function response
-        # second_response = client.chat.completions.create(
-        #     model="gpt-35-turbo",
-        #     messages=messages,
-        # )
-        # print(second_response)
+            ) 
         result = {
             "status": "success",
             "type": "function",
